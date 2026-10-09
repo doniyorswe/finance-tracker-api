@@ -1,0 +1,34 @@
+# Umumiy (base) konfiguratsiya. To'g'ridan-to'g'ri emas, override fayl bilan ishlating:
+#   dev:  docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+#   prod: docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-uniqr}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+    env_file: .env
+    environment:
+      # Konteyner ichida DB hosti "db" bo'ladi (.env dagi localhost o'rniga)
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-uniqr}?schema=public
+    ports:
+      - '${PORT:-3000}:${PORT:-3000}'
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

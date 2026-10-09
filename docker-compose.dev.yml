@@ -1,0 +1,20 @@
+name: uniqr-dev
+
+services:
+  db:
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+
+  app:
+    build:
+      target: development
+    environment:
+      NODE_ENV: development
+      # Windows/macOS bind-mount'da fayl o'zgarishini ushlash uchun polling
+      TSC_WATCHFILE: DynamicPriorityPolling
+      TSC_WATCHDIRECTORY: DynamicPriorityPolling
+    ports:
+      - '9229:9229'
+    volumes:
+      - .:/app
+      - /app/node_modules

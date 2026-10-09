@@ -1,0 +1,30 @@
+// Prisma schema: https://pris.ly/d/prisma-schema
+// Ulanish manzili (DATABASE_URL) prisma.config.ts orqali beriladi.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String   @default("Admin")
+  createdAt DateTime @default(now())
+}
+
+model Restaurant {
+  id             String   @id @default(uuid())
+  name           String
+  slug           String   @unique
+  tableCount     Int      @default(10)
+  serviceFee     Int      @default(0)
+  telegramChatId String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+}

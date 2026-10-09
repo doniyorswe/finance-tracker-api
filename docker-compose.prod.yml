@@ -1,0 +1,12 @@
+name: uniqr-prod
+
+services:
+  db:
+    restart: unless-stopped
+
+  app:
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+    restart: unless-stopped
