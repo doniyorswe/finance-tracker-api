@@ -8,6 +8,7 @@ import {
   IsString,
   Max,
   Min,
+  MinLength,
   validateSync,
 } from 'class-validator';
 
@@ -29,6 +30,15 @@ class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   DATABASE_URL: string;
+
+  /** Token imzolash kaliti — kamida 32 belgi */
+  @IsString()
+  @MinLength(32)
+  JWT_SECRET: string;
+
+  /** Token muddati: 15m, 12h, 1d, 7d ... */
+  @IsString()
+  JWT_EXPIRES_IN: string = '1d';
 
   /** Berilmasa: production'da o'chiq, boshqa muhitlarda yoqiq */
   @IsOptional()

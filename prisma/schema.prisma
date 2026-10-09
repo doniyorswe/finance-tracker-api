@@ -10,12 +10,18 @@ datasource db {
   provider = "postgresql"
 }
 
-model Admin {
+enum Role {
+  admin
+  user
+}
+
+model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
-  name      String   @default("Admin")
+  name      String   @default("User")
   createdAt DateTime @default(now())
+  role      Role     @default(user)
 }
 
 model Restaurant {

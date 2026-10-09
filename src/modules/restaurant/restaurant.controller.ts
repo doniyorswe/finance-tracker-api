@@ -6,11 +6,16 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { RestaurantService } from './restaurant.service.js';
 import { RestaurantCreateDto } from './restaurant-create.dto.js';
 import { PaginationQueryDto } from '../../lib/pagination.js';
+import { AuthGuard } from '../auth/auth.guard.js';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('restaurants')
 export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) {}
