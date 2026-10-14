@@ -1,4 +1,4 @@
-# uniqr-backend
+# financetracker-backend
 
 NestJS 12 + Prisma 7 + PostgreSQL 17 + TypeScript, Docker orqali `dev` yoki `prod` rejimda ishga tushadi.
 
@@ -17,8 +17,8 @@ Yangi npm paket qo'shilganda `npm run docker:dev` qayta ishga tushiring (`-V` no
 To'xtatish: `npm run docker:dev:down` / `npm run docker:prod:down`.
 DB ma'lumotlarini ham o'chirish uchun oxiriga `-- -v` qo'shing.
 
-Ilova: http://localhost:3000/api
-Swagger: http://localhost:3000/docs (JSON: `/docs/json`)
+Ilova: http://localhost:8000/api
+Swagger: http://localhost:8000/docs (JSON: `/docs/json`)
 
 | Endpoint              | Tavsif                       |
 | --------------------- | ---------------------------- |

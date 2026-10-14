@@ -1,4 +1,4 @@
-name: uniqr-prod
+name: financetracker-prod
 
 services:
   db:

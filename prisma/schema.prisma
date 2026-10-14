@@ -15,22 +15,52 @@ enum Role {
   user
 }
 
+// TransactionType 
+// 1 - Income
+// 2 - Expense
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String   @default("User")
-  createdAt DateTime @default(now())
-  role      Role     @default(user)
+  id             String   @id @default(uuid())
+  telegramUserId String   @unique
+  fullName       String
+  createdAt      DateTime @default(now())
+
+  categories   Category[]
+  transactions Transaction[]
+
+  @@map("users")
 }
 
-model Restaurant {
-  id             String   @id @default(uuid())
-  name           String
-  slug           String   @unique
-  tableCount     Int      @default(10)
-  serviceFee     Int      @default(0)
-  telegramChatId String?
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  type      Int
+  userId    String?
+  createdAt DateTime @default(now())
+
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([userId])
+  @@map("categories")
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  amount      Decimal  @db.Decimal(12, 2)
+  type        Int
+  description String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  categoryId String
+  userId     String
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([categoryId])
+  @@index([date])
+  @@map("transactions")
 }

@@ -5,8 +5,8 @@ export const SWAGGER_PATH = 'docs';
 
 export function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
-    .setTitle('Uniqr API')
-    .setDescription('Uniqr backend API hujjatlari')
+    .setTitle('Finance Tracker API')
+    .setDescription('Finance Tracker backend API hujjatlari')
     .setVersion('0.1.0')
     .addBearerAuth()
     .build();

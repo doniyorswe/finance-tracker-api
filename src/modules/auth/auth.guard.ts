@@ -8,12 +8,6 @@ import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
 import { JwtPayload } from './auth.types.js';
 
-/**
- * Himoyalangan route'lar uchun: `@UseGuards(AuthGuard)`
- *
- * "Authorization: Bearer <token>" header'ini o'qiydi, tokenni tekshiradi
- * va payload'ni `request.user` ga yozadi (keyin @CurrentUser() bilan olinadi).
- */
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private readonly jwt: JwtService) {}
@@ -29,7 +23,6 @@ export class AuthGuard implements CanActivate {
     try {
       request.user = await this.jwt.verifyAsync<JwtPayload>(token);
     } catch {
-      // imzo noto'g'ri yoki muddati o'tgan
       throw new UnauthorizedException('token_invalid');
     }
     return true;

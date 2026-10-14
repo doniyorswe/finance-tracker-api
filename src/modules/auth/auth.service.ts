@@ -1,17 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import bcrypt from 'bcryptjs';
-import { Role } from '../../generated/prisma/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { JwtPayload } from './auth.types.js';
 import { RegisterDto } from './dto/register.dto.js';
 
 const userSelect = {
   id: true,
-  email: true,
-  name: true,
+  fullName: true,
   createdAt: true,
-  role: true,
 };
 
 @Injectable()
@@ -21,44 +16,32 @@ export class AuthService {
     private readonly jwt: JwtService,
   ) {}
 
-  async login(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+  async register(dto: RegisterDto) {
+    const { full_name: fullName, telegram_user_id: telegramUserId } = dto;
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException('invalid_credentials');
+    const user = await this.prisma.user.findUnique({
+      where: { telegramUserId },
+    });
+
+    if (user) {
+      return {
+        token: this.jwt.sign({ sub: user.id }),
+        user,
+      };
     }
 
-    const payload: JwtPayload = { sub: user.id, email: user.email };
-    return {
-      accessToken: await this.jwt.signAsync(payload),
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-    };
-  }
-
-  async register(dto: RegisterDto) {
-    const { email, password, name } = dto;
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await this.prisma.user.create({
+    const newUser = await this.prisma.user.create({
       data: {
-        email,
-        password: hashedPassword,
-        name,
-        role: Role.user,
+        fullName,
+        telegramUserId,
       },
       select: userSelect,
     });
 
-    const jwtPayload: JwtPayload = { sub: user.id, email: user.email };
-    const accessToken = await this.jwt.signAsync(jwtPayload);
-
-    return { user, accessToken };
+    return {
+      token: this.jwt.sign({ sub: newUser.id }),
+      user: newUser,
+    };
   }
 
   async me(userId: string) {
@@ -68,17 +51,5 @@ export class AuthService {
     });
     if (!user) throw new UnauthorizedException();
     return user;
-  }
-
-  async createAdmin() {
-    const email = 'admin@gmail.com';
-    const password = await bcrypt.hash('12345678', 10);
-
-    return this.prisma.user.upsert({
-      where: { email },
-      update: { password, role: Role.admin },
-      create: { email, password, name: 'Admin', role: Role.admin },
-      select: userSelect,
-    });
   }
 }

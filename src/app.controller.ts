@@ -6,6 +6,6 @@ import { ApiTags } from '@nestjs/swagger';
 export class AppController {
   @Get()
   getInfo() {
-    return { name: 'uniqr-backend', status: 'ok' };
+    return { name: 'financetracker-backend', status: 'ok' };
   }
 }

@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-uniqr}
+      POSTGRES_DB: ${POSTGRES_DB:-financetracker}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -23,9 +23,9 @@ services:
     env_file: .env
     environment:
       # Konteyner ichida DB hosti "db" bo'ladi (.env dagi localhost o'rniga)
-      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-uniqr}?schema=public
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-financetracker}?schema=public
     ports:
-      - '${PORT:-3000}:${PORT:-3000}'
+      - '${PORT:-8000}:${PORT:-8000}'
     depends_on:
       db:
         condition: service_healthy
